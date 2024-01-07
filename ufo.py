@@ -128,3 +128,34 @@ longest_encounter_per_country = ufo.groupBy("Country").agg({"length_of_encounter
 
 # Display the longest UFO encounters per country as a bar chart
 display(longest_encounter_per_country)
+
+# COMMAND ----------
+
+# Filter out rows with missing or invalid latitude/longitude values
+valid_location_data = ufo.filter((col("latitude").isNotNull()) & (col("longitude").isNotNull()))
+
+# Select columns for mapping
+locations = valid_location_data.select("latitude", "longitude", "Country")
+
+# Display the UFO sightings on a map
+display(locations)
+
+# COMMAND ----------
+
+ufo = ufo.withColumn("latitude", col("latitude").cast(DoubleType()))
+ufo = ufo.withColumn("longitude", col("longitude").cast(DoubleType()))
+
+# COMMAND ----------
+
+ufo.write.mode("overwrite").option("header",'true').csv("/mnt/ufo-data/transformed/ufo")
+
+# COMMAND ----------
+
+# Filter out rows with missing or invalid latitude/longitude values
+valid_location_data = ufo.filter((col("latitude").isNotNull()) & (col("longitude").isNotNull()))
+
+# Select necessary columns for mapping
+locations = valid_location_data.select("latitude", "longitude", "Country")
+
+# Display the UFO sightings on a map
+display(locations)
